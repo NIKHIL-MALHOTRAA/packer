@@ -1,0 +1,67 @@
+
+        "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+        "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}"
+    },
+    "builders": [
+        {
+            "access_key": "{{user `aws_access_key`}}",
+            "ami_name": "Tomcat8_OJDK8_AMI",
+            "instance_type": "t3.micro",
+            "region": "ap-south-1",
+            "secret_key": "{{user `aws_secret_key`}}",
+            "security_group_id":"",
+            "ssh_keypair_name":"",
+            "ssh_private_key_file":"",
+            "associate_public_ip_address":"true",
+            "source_ami_filter": {
+              "filters": {
+              "virtualization-type": "hvm",
+              "name": "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*",
+              "root-device-type": "ebs"
+              },
+              "owners": ["id"],
+              "most_recent": true
+            },
+            "ssh_username": "ubuntu",
+            "type": "amazon-ebs"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline":[
+                "sudo add-apt-repository ppa:openjdk-r/ppa",
+                "sudo apt-get update",
+                "sudo apt-get install -y openjdk-8-jdk",
+                "java -version",
+                "sudo apt-get install -y tomcat8"
+            ]
+        }
+    ]
+}
+
+------------------------------------------------------
+{
+    "variables": {
+        "aws_region": "{{env `AWS_REGION`}}",
+        "aws_ami_name": "amazon-linux_{{isotime \"02Jan2006\"}}"
+    },
+
+    "builders": [{
+        "type": "amazon-ebs",
+        "region": "{{user `aws_region`}}",
+        "instance_type": "t2.micro",
+        "ssh_username": "ec2-user",
+        "ami_name": "{{user `aws_ami_name`}}",
+        "ami_description": "Customized Amazon Linux",
+        "associate_public_ip_address": "true",
+        "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name": "amzn-ami*-ebs",
+                "root-device-type": "ebs"
+            },
+            "owners": [12345679", "dqwdqx", "10"],
+            "most_recent": true
+        }
+    }],
